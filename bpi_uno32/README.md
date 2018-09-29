@@ -4,7 +4,7 @@
 
 bpi uno32 是一塊具有wifi與藍芽功能的模組
 
-< img src="https://i.imgur.com/Fg4Xywh.jpg" width="25%" height="25%" />
+<img src="https://i.imgur.com/Fg4Xywh.jpg" width="25%" height="25%" />
 
 #### 硬體規格
 
