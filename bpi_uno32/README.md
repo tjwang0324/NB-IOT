@@ -1,12 +1,11 @@
 # 使用bpi uno32 透過wifi 編譯MicroPythone
 
-## 前言
+## uno32介紹
 
-bpi uno32 是一塊具有wifi與藍芽功能的模組
+bpi uno32 是一塊具有wifi與藍芽功能的模組，不僅可以使用原生的SDK進行編譯
+同時也支援Arduino IDE與Platfrom IO等多種開發平台。
 
-<img src="https://i.imgur.com/Fg4Xywh.jpg" width="25%" height="25%" />
-
-#### 硬體規格
+<img src="https://i.imgur.com/Fg4Xywh.jpg" width="40%" height="40%" />
 
 | 名稱 | 說明 |
 |:----:|:---:|
@@ -28,81 +27,203 @@ bpi uno32 是一塊具有wifi與藍芽功能的模組
 ## 驅動程式安裝
 
 先將bpi uno32 連接電腦。
-![alt tag](https://i.imgur.com/Dr5PJF5.jpg)
 
-接著去裝置管理員查看是否有安裝過驅動 路徑：控制台>系統及安全性>系統>裝置管理員，如果有安裝就會像以下畫面。
+![alt tag](https://i.imgur.com/rCSia4Q.jpg)
+
+接著去裝置管理員查看是否有安裝過驅動 路徑：控制台>系統及安全性>系統>裝置管理員，如果已經安裝過就會像以下畫面。
+
 ![alt tag](https://i.imgur.com/Zhr7TMj.png)
 
-連接埠的位置會顯示USB-SERIAL CH340的文字，若沒有出現可以下載ch340的驅動，網址(<http://wch.cn/download/CH341SER_ZIP.html>)。
+連接埠的位置會顯示USB-SERIAL CH340的文字，若沒有出現，就要去下載ch340的驅動
+
+網址(<http://wch.cn/download/CH341SER_ZIP.html>)。
 
 下載完解壓縮之後依照路徑 CH341SER > CH341SER > SETUP.exe 找到檔案之後進行安裝。
+
 ![alt tag](https://i.imgur.com/yrDSKaa.png)
 
 安裝完畢之後就會如上面裝置管理員所示，出現連接埠下方的訊息。
 
-## 開發環境
+## 燒錄韌體
 
-要的開發平台是使用這一套uPyCraft(<http://docs.dfrobot.com.cn/upycraft/>)，bpi uno32的 wiki 上也是使用這一套進行程式的編寫。
-![alt tag](https://i.imgur.com/8cUkd07.png)
+使用Linux或是Windows系統下的子系統，以下使用win10示範
 
-下載完成之後到(<http://micropython.org/download#esp32>)下載最新版本的韌體。
-![alt tag](https://i.imgur.com/olaE3rm.png)
+打開“控制台”的視窗，點選“程式集”，再點選“開啟或變更 Windows 功能”
 
-兩者都下載完之後打開uPyCraft。
+![alt tag](https://i.imgur.com/UgpvkJO.png)
 
-打開之後會出現這個對話框，意思是詢問要不要安裝文字套件，點選”OK”。不安裝會沒辦法使用軟體並且每次打開都會詢問一次。
-![alt tag](https://i.imgur.com/1veEmN4.png)
+之後找到“”“適用於 Linux 的 Windows 子系統”，將選項打勾
 
-進入畫面之後會再跳出一個視窗詢問要不要更新，我個人是選否，更新之後一些比較重要的功能會無法使用。
-![alt tag](https://i.imgur.com/a08Kp0s.png)
+![alt tag](https://i.imgur.com/liX0Czw.png)
 
-選項選完之後第一步先選”Tools>Serial>(CH340的COM PORT)”。
-![alt tag](https://i.imgur.com/gRPAIhF.png)
+接著會問要不要重新開機，點選“立即重新開機”，如果不重新開機定不會生效
 
-之後會跳出這個視窗按照圖片上的選項選完之後，在Firmware Choose那邊選擇第二個，檔案選擇前面說明中下載的esp32的韌體。
-![alt tag](https://i.imgur.com/EyeNrhi.png)
+![alt tag](https://i.imgur.com/X1pZNfJ.png)
 
-等狀態條跑完後，就可以看看有沒有辦法能與板子連接。
-![alt tag](https://i.imgur.com/sWp9RoF.png)
+重新開機完之後，打開“開始功能選單”,點選“Microsoft Store"或是搜尋“Microsoft Store"
 
-出現這樣的箭頭就表示連接成功，並且剛剛鎖鏈圖示的地方也會變成現在圖中的狀態。這樣就可以開始codeing了。example裡面有一些程式可以試試看，這邊示範其中幾個。
-![alt tag](https://i.imgur.com/waFp6a5.png)
+![alt tag](https://i.imgur.com/tfoJr8k.png)
 
-## LED on off
+搜尋“Ubuntu”
 
-首先一開始先new一個檔案。
-![alt tag](https://i.imgur.com/IGmYSr3.png)
+![alt tag](https://i.imgur.com/OfADHsA.png)
 
-打開之後可以把example的code貼上來。
-![alt tag](https://i.imgur.com/BgmfIV4.png)
+點選第一個沒有任何數字的“Ubuntu”
 
-貼上之後，先儲存。
-![alt tag](https://i.imgur.com/zHRkPpy.png)
+![alt tag](https://i.imgur.com/ZnnU4UG.png)
 
-選擇程式碼存放的資料夾。
-![alt tag](https://i.imgur.com/LTKmSu4.png)
+接著按取得，下載“Ubuntu”
 
-接著皆可以開始執行了，圈圈1的功能是compiler先檢查有沒有什麼語法上的錯誤，如果沒有就可以點選圈圈2上傳，這個範例是hello.py的code會讓LED跑亮滅迴圈。
-上傳成功之後會顯示的訊息，並且這個LED(pin18)會亮滅
-![alt tag](https://i.imgur.com/UtsIlLT.png)
-![alt tag](https://imgur.com/a/uL1vy5D)
+![alt tag](https://i.imgur.com/sMsOGTV.png)
 
-## 基礎算法
+這邊會問你要不要登入，可以登入windows原本的微軟帳號，或是自己辦一個
 
-打開example的leapyear.py，compiler後上傳，上傳後在”>>>”後面輸入```cmd
-is_leap_year(int(input("input a leap year ")))```
-，之後就可以輸入你想判斷的年份
-![alt tag](https://i.imgur.com/3H2uCJV.png)
+![alt tag](https://i.imgur.com/nXaXpXs.png)
 
-可以看到 2004 is leap year，說明 2004 年是閏年。
-可以看到 1999 not is leap year，說明 1999 年不是閏年。
-可以看到 2000 is leap year，說明 2000 年是閏年。
-你也可以繼續輸入更多，讓它回答你哪一年是閏年。
+安裝完之後，在”開始功能選單“中可以看到有"Ubuntu"，點選打開"Ubuntu"
+
+![alt tag](https://i.imgur.com/JgVgu2i.png)
+
+打開之後系統會先安裝基本的套件，安裝之後系統會要求你輸入使用者帳密
+
+![alt tag](https://i.imgur.com/ZyCKMS0.png)
+
+設定完之後可以看到這個畫面，看到這個畫面之後就可以打視窗關掉了
+
+![alt tag](https://i.imgur.com/RZT36qx.png)
+
+打開“開始功能表”點選“Windows Power Shell”，我們接下來的安裝都是藉由這個軟體操作
+
+![alt tag](https://i.imgur.com/lz9Tc9V.png)
+
+打開之後輸入指令```bash```
+
+![alt tag](https://i.imgur.com/8UcKiV5.png)
+
+接著會要求你輸入剛剛設定的帳號密碼，輸入完成登入後就可依序執行以下幾行指令
+
+```sudo su```接著輸入剛剛設定的密碼
+
+如果有遇到Do you want to continue? [Y/n] 請打y 就是yes的意思
+
+```
+apt-get install software-properties-common
+apt-add-repository universe
+apt-get update
+apt-get install python-pip
+pip install esptool
+```
+
+上面的指令輸入後會安裝一些套件，套件安裝完之後要把windows的comport映射到linux去
+
+輸入以下指令其中*代表剛剛查看到COM的數字
+
+```
+apt-get install rdesktop
+rdesktop -r comport:COM*=/dev/ttyS*
+ln -s /dev/ttyS*  /dev/ttyUSB0
+chmod 766 /dev/ttyUSB0
+```
+
+完成之後，街的藥來燒路韌體
+
+首先先輸入```esptool.py --chip esp32 --port /dev/ttyUSB0 --baud 115200 earse_flash```
+
+接著將tool資料夾裡的"firmware0829.bin"下載下來後，放到桌面
+
+輸入```cd Desktop/```
+
+在執行```esptool.py --chip esp32 --port /dev/ttyUSB --baud 115200 write_flash -z --flash_mode dio --flash_freq 40m 0x1000 firmware0829.bin```
+
+執行完之後結果會長這樣
+
+![alt tag](https://i.imgur.com/hwea4di.png)
+
+接著到tool下載“FLASH_DOWNLOAD_TOOLS_V3.6.2”，並執行“ESPFlashDownloadTool_v3.6.2.exe”
+
+看到這個畫面後點選“ESP32 DownloadTool”
+
+![alt tag](https://i.imgur.com/AOT553e.png)
+
+裡面可能有很多打勾勾的地方，把勾勾取消掉並刪掉裡面的東西，接著按下畫面中圈起來的三個點
+
+![alt tag](https://i.imgur.com/QOkvkYM.png)
+
+選擇剛剛下載的"firmware0829.bin"，按下確定
+
+![alt tag](https://i.imgur.com/1Sgo3pp.png)
+
+就會回到剛剛的畫面，然後按照上面的步驟做，將第一個框框勾起來，確認一下2,3,4,5資訊有沒有錯誤
+
+接著選擇裝置的COM，確定Baud是115200後就可以按下START
+
+![alt tag](https://i.imgur.com/sDWaxJi.png)
+
+完成之後會出現下面的畫面
+![alt tag](https://i.imgur.com/1lJiuBx.png)
+
+接下來拿出Android手機，打開google play 搜尋“esp8266 smartconfig”，選擇第一個
+
+![alt tag](https://i.imgur.com/zh8qrWG.png)
+
+點選”安裝“
+![alt tag](https://i.imgur.com/Nhaw22H.png)
+
+安裝完後打開會出現此畫面
+
+![alt tag](https://i.imgur.com/Iz2UzQU.png)
+
+之後將你的手機連接至附近的wifi分享器(要可以輸入帳密的)，在輸入框中輸入wifi分享器的密碼
+
+記住帳號之後，點選"CONFIRM"
+
+![alt tag](https://i.imgur.com/z85AGb4.png)
+
+有順利連接到，又會出現此畫面，紅色框框裡是uno32在區網的ＩＰ，若沒有起多嘗試幾次
+![alt tag](https://i.imgur.com/hOBVf1t.png)
+
+接下來下載tool裡的putty，下載完之後安裝，安裝完之後打開
+
+打開之後依照圖片裡的去設定，點選“Serial”，輸入裝置的COMPOTY，speed是115200，都設定完之後點選“Open”
+
+![alt tag](https://i.imgur.com/oLuVY4F.png)
+
+進來之後輸入```import webrepl_setup```如果沒有動靜，就要將uno32重新啟動
+
+![alt tag](https://i.imgur.com/WonCXaZ.png)
+
+輸入之後會跳初選項，選"e"
+
+![alt tag](https://i.imgur.com/oecJvKG.png)
+
+接著會要設一組，esp32使用遠端編譯時會用的密碼
+
+![alt tag](https://i.imgur.com/XV052N7.png)
+
+設定完之後，前往<http://micropython.org/webrepl/>
+
+![alt tag](https://i.imgur.com/cR4YvqI.png)
+
+將原本的IP改成剛剛用手機查到的IP，點擊Connected
+
+![alt tag](https://i.imgur.com/w1sl5e7.png)
+
+連接之後就可以輸入密碼，接著就可以開始編譯了
+
+![alt tag](https://i.imgur.com/BMwQDdN.png)
+
+可使用以下程式碼進行測試
+
+```
+from machine import Pin
+led = Pin(27,Pin.OUT)
+led.value(1)
+```
+![alt tag](https://i.imgur.com/hgYCUHO.png)
+
+成果會像下面圖中所示
+![alt tag](https://i.imgur.com/YMvKPaX.jpg)
 
 
-什麼是斐波那契数列？它指的是，有這樣一個數列 0, 1, 1, 2, 3, 5, 8, 13，特别指出：第0項是0，第1項是第一個1。从第三項開始，每一項都等於前兩項之和。
-
-打開example的fablist.py，compiler後上傳，上傳後在”>>>”後面輸入```cmd
-printfablist(int(input('please input a number:')))```
-，接著可以自己輸入驗證看看
-![alt tag](https://i.imgur.com/xU9aDeC.png)
+有些事項要注意，電腦要跟uno32在同一個區網內，否則無法使用
+第二次之後使用就是uno32上電之後，在用手機查看IP，在進行連線
