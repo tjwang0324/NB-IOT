@@ -6,19 +6,21 @@ bpi uno32 是一塊具有wifi與藍芽功能的模組
 
 ![alt tag](https://i.imgur.com/Fg4Xywh.jpg)
 
-| 硬體規格 |
-| :---- | :----- |
-| CPU ｜ Xtensa®32-bitLX6單/雙核處理器 ｜
-| ROM | 448KB |
-| SRAM | 520KB |
-| Flash | 4MB（Onboard），最多4個Flash / SRAM，每個Flash最大16MB |
-| Power | 5V@1AmicroUSBpoweror 5.5mm 12VDCport |
-| GPIO|12-bits SAR ADC 18 channel, 2*8-bit D/A converter, 4*SPI, 2*I2S, 2*I2C, 3*UART, Host SD/eMMC/SDIO, Slave SDIO/SPI |
-|Wi-Fi | 802.11 b/g/n/e/i 802.11 n \ (2.4GHz 150Mbps\ ) 802.11 e \ (Quality of Service\ )|
-| Bluetooth | BT4.2 & BLE |
-| Buzzer | Passive buzzer |
-| LEDs | RGB LED/POWER LED/Receive LED/Transmit LED |
-| Sizes | 68mm*53mm |
+#### 硬體規格
+
+| 名稱 | 說明 |
+|:----:|:---:|
+|  CPU      |  Xtensa®32-bitLX6單/雙核處理器  |
+|  ROM        |  448KB  |
+|  SRAM       |  520KB  |
+|  Flash      |  4MB（Onboard），最多4個Flash / SRAM，每個Flash最大16MB  |
+|  Power      |  5V@1AmicroUSBpoweror 5.5mm 12VDCport  |
+|  GPIO       |  12-bits SAR ADC 18 channel, 2*8-bit D/A converter, 4*SPI, 2*I2S, 2*I2C, 3*UART, Host SD/eMMC/SDIO, Slave SDIO/SPI  |
+|  Wi-Fi      |  802.11 b/g/n/e/i 802.11 n \ (2.4GHz 150Mbps\ ) 802.11 e \ (Quality of Service\ )  |
+|  Bluetooth  |  BT4.2 & BLE  |
+|  Buzzer     |  Passive buzzer  |
+|  LEDs       |  RGB LED/POWER LED/Receive LED/Transmit LED  |
+|  Sizes      |  68mm*53mm  |
 
 
 同時也支援Arduino IDE與Platfrom IO等多種開發平台，這篇主要是分享使用MicroPython 開發bpi uno32。
