@@ -1,4 +1,4 @@
-# 使用bpi uno32 燒錄 MicroPython
+# 使用bpi uno32 透過wifi 編譯MicroPythone
 
 ## 前言
 
