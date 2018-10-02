@@ -125,7 +125,7 @@ ln -s /dev/ttyS*  /dev/ttyUSB0
 chmod 766 /dev/ttyUSB0
 ```
 
-完成之後，街的藥來燒路韌體
+完成之後，就可以開始燒路韌體
 
 首先先輸入```esptool.py --chip esp32 --port /dev/ttyUSB0 --baud 115200 earse_flash```
 
@@ -133,7 +133,7 @@ chmod 766 /dev/ttyUSB0
 
 輸入```cd Desktop/```
 
-在執行```esptool.py --chip esp32 --port /dev/ttyUSB --baud 115200 write_flash -z --flash_mode dio --flash_freq 40m 0x1000 firmware0829.bin```
+在執行```esptool.py --chip esp32 --port /dev/ttyUSB0 --baud 115200 write_flash -z --flash_mode dio --flash_freq 40m 0x1000 firmware0829.bin```
 
 執行完之後結果會長這樣
 
