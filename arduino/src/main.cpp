@@ -46,6 +46,11 @@ void setup() {
        Serial1.print("Init FAIL!");
        Serial1.println(flash.readDeviceId(),HEX);
    }
+
+   for(int i=0;i<sizeof(LEDS);i++){
+		pinMode(LEDS[i], OUTPUT);
+		digitalWrite(LEDS[i], HIGH);
+	}
 }
 
 String BC95_Buffer = "";
