@@ -43,7 +43,9 @@ void setup() {
 	Serial1.println("STM32 begin ...");
 
 	Serial2.begin(9600);
-//	Serial3.begin(9600);
+
+	Serial3.begin(9600);
+    Serial3.println("hello im RS485");
 
 	if (flash.initialize())
 	{
@@ -83,13 +85,13 @@ void loop() {
 			BC95_Buffer = "";
 		}
 	}
-/*
+
 	if (Serial3.available() > 0) {
 		int incomingByte = Serial3.read();
 		Serial1.print("Serial3 Recevied : ");
 		Serial1.println(incomingByte, HEX);
 	}
-*/
+
 	if (Serial1.available() > 0) {
 		int incomingByte = Serial1.read();
 		Serial1.print("Serial1 Recevied : ");
