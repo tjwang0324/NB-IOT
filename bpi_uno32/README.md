@@ -5,8 +5,8 @@
 本產品採用ESP-WROOM-32為核心，支持藍牙，BLE等通訊方式。
 可使用原生的SDK進行編譯，也支援Arduino IDE與Platfrom IO等多種開發平台。
 <figure class="half">
-    <img src="https://i.imgur.com/kPkmtRV.jpg">
-    <img src="https://i.imgur.com/LbD82TR.jpg">
+    <img src="https://i.imgur.com/kPkmtRV.jpg" width="40%" hight="40%"/>
+    <img src="https://i.imgur.com/LbD82TR.jpg" width="40%" hight="40%"/>
 </figure>
 
 
@@ -159,6 +159,7 @@ chmod 766 /dev/ttyUSB0
 ![alt tag](https://i.imgur.com/sDWaxJi.png)
 
 完成之後會出現下面的畫面
+
 ![alt tag](https://i.imgur.com/1lJiuBx.png?1)
 
 接下來拿出Android手機，打開google play 搜尋“esp8266 smartconfig”，選擇第一個
@@ -166,6 +167,7 @@ chmod 766 /dev/ttyUSB0
 ![alt tag](https://i.imgur.com/zh8qrWG.png?1)
 
 點選”安裝“
+
 ![alt tag](https://i.imgur.com/Nhaw22H.png?1)
 
 安裝完後打開會出現此畫面
