@@ -1,11 +1,14 @@
 # 使用bpi uno32 透過wifi 編譯MicroPythone
 
-## uno32介紹
+## 認識uno32
 
-bpi uno32 是一塊具有wifi與藍芽功能的模組，不僅可以使用原生的SDK進行編譯
-同時也支援Arduino IDE與Platfrom IO等多種開發平台。
+本產品採用ESP-WROOM-32為核心，支持藍牙，BLE等通訊方式。
+可使用原生的SDK進行編譯，也支援Arduino IDE與Platfrom IO等多種開發平台。
+<figure class="half">
+    <img src="https://i.imgur.com/kPkmtRV.jpg">
+    <img src="https://i.imgur.com/LbD82TR.jpg">
+</figure>
 
-<img src="https://i.imgur.com/Fg4Xywh.jpg" width="40%" height="40%" />
 
 | 名稱 | 說明 |
 |:----:|:---:|
@@ -22,27 +25,25 @@ bpi uno32 是一塊具有wifi與藍芽功能的模組，不僅可以使用原生
 |  Sizes      |  68mm*53mm  |
 
 
-同時也支援Arduino IDE與Platfrom IO等多種開發平台，這篇主要是分享使用MicroPython 開發bpi uno32。
-
 ## 驅動程式安裝
 
 先將bpi uno32 連接電腦。
 
 ![alt tag](https://i.imgur.com/rCSia4Q.jpg)
 
-接著去裝置管理員查看是否有安裝過驅動 路徑：控制台>系統及安全性>系統>裝置管理員，如果已經安裝過就會像以下畫面。
+開啟裝置管理員查看是否有安裝過驅動 路徑：控制台>系統及安全性>系統>裝置管理員，如果已經安裝過驅動就會如以下畫面所顯示。
 
 ![alt tag](https://i.imgur.com/Zhr7TMj.png)
 
-連接埠的位置會顯示USB-SERIAL CH340的文字，若沒有出現，就要去下載ch340的驅動
+連接埠的位置會顯示USB-SERIAL CH340的文字。若沒有出現，或是出現驚嘆號，表示 沒有安裝過驅動或是驅動沒有安裝成功
 
-網址(<http://wch.cn/download/CH341SER_ZIP.html>)。
+驅動ch340網址(<http://wch.cn/download/CH341SER_ZIP.html>)。
 
-下載完解壓縮之後依照路徑 CH341SER > CH341SER > SETUP.exe 找到檔案之後進行安裝。
+載完解壓縮之後依照路徑 CH341SER > CH341SER > SETUP.exe 找到檔案之後進行安裝。
 
 ![alt tag](https://i.imgur.com/yrDSKaa.png)
 
-安裝完畢之後就會如上面裝置管理員所示，出現連接埠下方的訊息。
+安裝完畢之後就會如上方圖片中裝置管理員所示，出現連接埠下方的訊息。
 
 ## 燒錄韌體
 
@@ -50,9 +51,9 @@ bpi uno32 是一塊具有wifi與藍芽功能的模組，不僅可以使用原生
 
 打開“控制台”的視窗，點選“程式集”，再點選“開啟或變更 Windows 功能”
 
-![alt tag](https://i.imgur.com/UgpvkJO.png)
+![alt tag](https://i.imgur.com/UgpvkJO.png?1)
 
-之後找到“”“適用於 Linux 的 Windows 子系統”，將選項打勾
+之後找到“適用於 Linux 的 Windows 子系統”，將選項打勾
 
 ![alt tag](https://i.imgur.com/liX0Czw.png)
 
@@ -62,43 +63,43 @@ bpi uno32 是一塊具有wifi與藍芽功能的模組，不僅可以使用原生
 
 重新開機完之後，打開“開始功能選單”,點選“Microsoft Store"或是搜尋“Microsoft Store"
 
-![alt tag](https://i.imgur.com/tfoJr8k.png)
+![alt tag](https://i.imgur.com/tfoJr8k.png?1)
 
 搜尋“Ubuntu”
 
-![alt tag](https://i.imgur.com/OfADHsA.png)
+![alt tag](https://i.imgur.com/OfADHsA.png?1)
 
 點選第一個沒有任何數字的“Ubuntu”
 
-![alt tag](https://i.imgur.com/ZnnU4UG.png)
+![alt tag](https://i.imgur.com/ZnnU4UG.png?1)
 
 接著按取得，下載“Ubuntu”
 
-![alt tag](https://i.imgur.com/sMsOGTV.png)
+![alt tag](https://i.imgur.com/sMsOGTV.png?1)
 
 這邊會問你要不要登入，可以登入windows原本的微軟帳號，或是自己辦一個
 
-![alt tag](https://i.imgur.com/nXaXpXs.png)
+![alt tag](https://i.imgur.com/nXaXpXs.png?1)
 
 安裝完之後，在”開始功能選單“中可以看到有"Ubuntu"，點選打開"Ubuntu"
 
-![alt tag](https://i.imgur.com/JgVgu2i.png)
+![alt tag](https://i.imgur.com/JgVgu2i.png?1)
 
 打開之後系統會先安裝基本的套件，安裝之後系統會要求你輸入使用者帳密
 
-![alt tag](https://i.imgur.com/ZyCKMS0.png)
+![alt tag](https://i.imgur.com/ZyCKMS0.png?1)
 
 設定完之後可以看到這個畫面，看到這個畫面之後就可以打視窗關掉了
 
-![alt tag](https://i.imgur.com/RZT36qx.png)
+![alt tag](https://i.imgur.com/RZT36qx.png?1)
 
 打開“開始功能表”點選“Windows Power Shell”，我們接下來的安裝都是藉由這個軟體操作
 
-![alt tag](https://i.imgur.com/lz9Tc9V.png)
+![alt tag](https://i.imgur.com/lz9Tc9V.png?2)
 
 打開之後輸入指令```bash```
 
-![alt tag](https://i.imgur.com/8UcKiV5.png)
+![alt tag](https://i.imgur.com/8UcKiV5.png?1)
 
 接著會要求你輸入剛剛設定的帳號密碼，輸入完成登入後就可依序執行以下幾行指令
 
@@ -127,17 +128,15 @@ chmod 766 /dev/ttyUSB0
 
 完成之後，就可以開始燒路韌體
 
-首先先輸入```esptool.py --chip esp32 --port /dev/ttyUSB0 --baud 115200 earse_flash```
-
-接著將tool資料夾裡的"firmware0829.bin"下載下來後，放到桌面
+將tool資料夾裡的"firmware0829.bin"下載後，放到桌面
 
 輸入```cd Desktop/```
 
-在執行```esptool.py --chip esp32 --port /dev/ttyUSB0 --baud 115200 write_flash -z --flash_mode dio --flash_freq 40m 0x1000 firmware0829.bin```
+執行```esptool.py --chip esp32 --port /dev/ttyUSB0 --baud 115200 write_flash -z --flash_mode dio --flash_freq 40m 0x1000 firmware0829.bin```
 
 執行完之後結果會長這樣
 
-![alt tag](https://i.imgur.com/hwea4di.png)
+![alt tag](https://i.imgur.com/hwea4di.png?1)
 
 接著到tool下載“FLASH_DOWNLOAD_TOOLS_V3.6.2”，並執行“ESPFlashDownloadTool_v3.6.2.exe”
 
@@ -147,7 +146,7 @@ chmod 766 /dev/ttyUSB0
 
 裡面可能有很多打勾勾的地方，把勾勾取消掉並刪掉裡面的東西，接著按下畫面中圈起來的三個點
 
-![alt tag](https://i.imgur.com/QOkvkYM.png)
+![alt tag](https://i.imgur.com/QOkvkYM.png?1)
 
 選擇剛剛下載的"firmware0829.bin"，按下確定
 
@@ -160,14 +159,14 @@ chmod 766 /dev/ttyUSB0
 ![alt tag](https://i.imgur.com/sDWaxJi.png)
 
 完成之後會出現下面的畫面
-![alt tag](https://i.imgur.com/1lJiuBx.png)
+![alt tag](https://i.imgur.com/1lJiuBx.png?1)
 
 接下來拿出Android手機，打開google play 搜尋“esp8266 smartconfig”，選擇第一個
 
-![alt tag](https://i.imgur.com/zh8qrWG.png)
+![alt tag](https://i.imgur.com/zh8qrWG.png?1)
 
 點選”安裝“
-![alt tag](https://i.imgur.com/Nhaw22H.png)
+![alt tag](https://i.imgur.com/Nhaw22H.png?1)
 
 安裝完後打開會出現此畫面
 
@@ -180,7 +179,7 @@ chmod 766 /dev/ttyUSB0
 ![alt tag](https://i.imgur.com/z85AGb4.png)
 
 有順利連接到，又會出現此畫面，紅色框框裡是uno32在區網的ＩＰ，若沒有起多嘗試幾次
-![alt tag](https://i.imgur.com/hOBVf1t.png)
+![alt tag](https://i.imgur.com/hOBVf1t.png?1)
 
 接下來下載tool裡的putty，下載完之後安裝，安裝完之後打開
 
@@ -190,27 +189,27 @@ chmod 766 /dev/ttyUSB0
 
 進來之後輸入```import webrepl_setup```如果沒有動靜，就要將uno32重新啟動
 
-![alt tag](https://i.imgur.com/WonCXaZ.png)
+![alt tag](https://i.imgur.com/WonCXaZ.png?1)
 
 輸入之後會跳初選項，選"e"
 
-![alt tag](https://i.imgur.com/oecJvKG.png)
+![alt tag](https://i.imgur.com/oecJvKG.png?1)
 
 接著會要設一組，esp32使用遠端編譯時會用的密碼
 
-![alt tag](https://i.imgur.com/XV052N7.png)
+![alt tag](https://i.imgur.com/XV052N7.png?1)
 
 設定完之後，前往<http://micropython.org/webrepl/>
 
-![alt tag](https://i.imgur.com/cR4YvqI.png)
+![alt tag](https://i.imgur.com/cR4YvqI.png?1)
 
 將原本的IP改成剛剛用手機查到的IP，點擊Connected
 
-![alt tag](https://i.imgur.com/w1sl5e7.png)
+![alt tag](https://i.imgur.com/w1sl5e7.png?1)
 
 連接之後就可以輸入密碼，接著就可以開始編譯了
 
-![alt tag](https://i.imgur.com/BMwQDdN.png)
+![alt tag](https://i.imgur.com/BMwQDdN.png?1)
 
 可使用以下程式碼進行測試
 
@@ -219,7 +218,7 @@ from machine import Pin
 led = Pin(27,Pin.OUT)
 led.value(1)
 ```
-![alt tag](https://i.imgur.com/hgYCUHO.png)
+![alt tag](https://i.imgur.com/hgYCUHO.png?1)
 
 成果會像下面圖中所示
 ![alt tag](https://i.imgur.com/YMvKPaX.jpg)
