@@ -1,150 +1,150 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include <SPIFlash.h>
-#include <STM32ADC.h>
 
 // ~/.platformio/packages/framework-arduinoststm32/STM32F1/variants/generic_stm32f103r8/board.cpp
-
+//
 #define BC95_LED1       PC3
 #define BC95_LED2       PC2
 #define BC95_LED3       PC1
 #define BC95_LED4       PC0
+/*
+#define RS485_RO	PA3
+#define RS485_RE	PB8
+#define RS485_DE	PB9
+#define RS485_DI	PA2
+*/
+/*
+#define BOARD_SPI2_NSS_PIN      PB12
+#define BOARD_SPI2_SCK_PIN      PB13
+#define BOARD_SPI2_MISO_PIN     PB14
+#define BOARD_SPI2_MOSI_PIN     PB15
+*/
+//#define FLASH_SS	BOARD_SPI2_NSS_PIN
+#define FLASH_SS	BOARD_SPI1_NSS_PIN
+#define FLASH_ID	0XEF40
 
-#define RS485_RO    PA3
-#define RS485_RE    PB8
-#define RS485_DE    PB9
-#define RS485_DI    PA2
-
-#define FLASH_SS    BOARD_SPI1_NSS_PIN
-#define FLASH_ID    0XEF40
+#define	SOFT_SERIAL_TX	PB0
+#define	SOFT_SERIAL_RX	PB1
 
 SPIFlash flash(FLASH_SS, FLASH_ID);
+//SoftSerialSTM32 mySerial(SOFT_SERIAL_RX, SOFT_SERIAL_TX); // RX, TX
+//SoftSerialInt mySerial(SOFT_SERIAL_RX, SOFT_SERIAL_TX, 2);
 
 uint8_t LEDS[] = {BC95_LED1,BC95_LED2,BC95_LED3,BC95_LED4};
 unsigned long counter = 0;
-unsigned long LedCounter = 0;                                                                            
+unsigned long LedCounter = 0;
 unsigned long lastTime;
-
-uint8 pin = PB0;
-
-STM32ADC myADC(ADC1);
-
-uint16_t dataPoint;
+/*
+DEFINE_HWSERIAL(Serial, 1);                                                                              
+DEFINE_HWSERIAL(Serial1, 2);
+DEFINE_HWSERIAL(Serial2, 3);
+DEFINE_HWSERIAL_UART(Serial3, 4);
+DEFINE_HWSERIAL_UART(Serial4, 5);
+*/
 
 bool Flash_Ready = false;
+bool BC95_Connected = false;
 
 void setup() {
-   Serial1.begin(115200);
-   Serial2.begin(9600);
+	Serial1.begin(115200);
+	Serial1.println("STM32 begin ..."+String(F_CPU));
 
-   afio_remap(AFIO_REMAP_USART3_PARTIAL);
-   gpio_set_mode(GPIOC, 10, GPIO_AF_OUTPUT_PP);
-   gpio_set_mode(GPIOC, 11, GPIO_INPUT_FLOATING);
-   gpio_set_mode(GPIOC, 12, GPIO_AF_OUTPUT_PP);
+	Serial2.begin(9600);
 
-   Serial3.begin(9600);
-   Serial3.println("hello im Serial-3");
+    afio_remap(AFIO_REMAP_USART3_PARTIAL);
+    gpio_set_mode(GPIOC, 10, GPIO_AF_OUTPUT_PP);
+	gpio_set_mode(GPIOC, 11, GPIO_INPUT_FLOATING);
+	gpio_set_mode(GPIOC, 12, GPIO_AF_OUTPUT_PP); 
 
-   if (flash.initialize())
-   {
-       Flash_Ready = true;
-       Serial1.println("Flash Init OK!");
-   } else {
-       Flash_Ready = false;
-       Serial1.print("Flash Init FAIL!");
-       Serial1.println(flash.readDeviceId(),HEX);
-   }
+	Serial3.begin(9600);
+	Serial3.println("Hello, world?");
 
-   pinMode(pin,INPUT_ANALOG);
- 
-   myADC.setSampleRate(ADC_SMPR_1_5);//set the Sample Rate
-   myADC.setScanMode();              //set the ADC in Scan mode. 
-   myADC.setPins(&pin, 1);           //set how many and which pins to convert.
-   myADC.setContinuous();            //set the ADC in continuous mode.
-   
-   myADC.setDMA(&dataPoint, 1, (DMA_MINC_MODE | DMA_CIRC_MODE), NULL);
+	if (flash.initialize())
+	{
+		Flash_Ready = true;
+		Serial1.println("Init OK!");
+	} else {
+		Flash_Ready = false;
+		Serial1.print("Init FAIL!");
+		Serial1.println(flash.readDeviceId(),HEX);
+	}
 
-   myADC.startConversion();
-
-   for(int i=0;i<sizeof(LEDS);i++){
-       pinMode(LEDS[i], OUTPUT);
-       digitalWrite(LEDS[i], HIGH);
-   }
+	for(int i=0;i<sizeof(LEDS);i++){
+		pinMode(LEDS[i], OUTPUT);
+		digitalWrite(LEDS[i], HIGH);
+	}
 }
 
 String BC95_Buffer = "";
 bool RESET_BC95 = true;
-#define BC95_RESET_PIN  PA0
+#define BC95_RESET_PIN	PA0
 bool BC95_READY = false;
 bool ATCMD_OVER = false;
 
 void loop() {
+	if(RESET_BC95) {
+		pinMode(BC95_RESET_PIN, OUTPUT);
+		digitalWrite(BC95_RESET_PIN, HIGH);
+		delay(10);
+		digitalWrite(BC95_RESET_PIN, LOW);
+		RESET_BC95 = false;
+	}
 
-   if(RESET_BC95) {
-       pinMode(BC95_RESET_PIN, OUTPUT);
-       digitalWrite(BC95_RESET_PIN, HIGH);
-       delay(10);
-       digitalWrite(BC95_RESET_PIN, LOW);
-       RESET_BC95 = false;
-   }
+	if (Serial2.available() > 0) {
+		int incomingByte = Serial2.read();
+		BC95_Buffer.concat((char)incomingByte);
+		if(BC95_Buffer.endsWith("\r\n")) {
+			if(BC95_Buffer.indexOf("Neul")>=0) {
+				BC95_READY = true;
+			}
 
-   // BC95
-       if (Serial2.available() > 0) {
-           int incomingByte = Serial2.read();
-           BC95_Buffer.concat((char)incomingByte);
-           if(BC95_Buffer.endsWith("\r\n")) {
-               if(BC95_Buffer.indexOf("Neul") >= 0){
-                   BC95_READY = true;
-               }
+			if(BC95_Buffer == "OK\r\n") {
+				ATCMD_OVER = true;
+			}
 
-               if(BC95_Buffer == "OK\r\n"){
-                   ATCMD_OVER = true;
-               }
+			Serial1.print(BC95_Buffer);
+			BC95_Buffer = "";
+		}
 
-               Serial1.print(BC95_Buffer);
-               BC95_Buffer = "";
-           }
-
-           if(BC95_READY && ATCMD_OVER){
-                Serial2.print("\r\nAT+CMEE=1\r\n");
-                delay(2000);
-                Serial2.print("\r\nAT+CGMM\r\n");
-                delay(2000);
-                Serial2.print("\r\nAT+CGSN=1\r\n");
-                delay(2000);
-                Serial2.print("\r\nAT+CGATT=1\r\n");
-                delay(2000);
-                Serial2.print("\r\nAT+CGATT?\r\n");
-                delay(2000);
-                Serial2.print("\r\nAT+CGATT?\r\n");
-                delay(2000);
-                Serial2.print("\r\nAT+CSQ\r\n");
-                delay(4000);
-                Serial2.print("\r\nAT+COPS?\r\n");
-                delay(2000);
-                Serial2.print("\r\nAT+CEREG=1\r\n");
-                delay(2000);
-                Serial2.print("\r\nAT+CEREG?\r\n");
-                delay(2000);
-                Serial2.print("\r\nAT+CSCON=1\r\n");
-                delay(2000);
-                Serial2.print("\r\nAT+CSCON?\r\n");
-                delay(2000);
-                
-                //AT+NMSTATUS?
-               //AT+NMGS=3,AA11BB
-                
-               BC95_READY = false;
-               ATCMD_OVER = false;
-           }
-       }
-
-    //UART1
+		if(BC95_READY && ATCMD_OVER) {
+			//Serial2.print("\r\nAT+NUESTATS\r\n");
+            Serial2.print("\r\nAT+NBAND=8\r\n");
+            delay(2000);
+            Serial2.print("\r\nAT+CGMM\r\n");
+            delay(2000);
+            Serial2.print("\r\nAT+CGSN=1\r\n");
+            delay(2000);
+            Serial2.print("\r\nAT+CGATT=1\r\n");
+            delay(2000);
+            Serial2.print("\r\nAT+CGATT?\r\n");
+            delay(2000);
+            Serial2.print("\r\nAT+CEREG=1\r\n");
+            delay(2000);
+            Serial2.print("\r\nAT+CEREG?\r\n");
+            delay(2000);
+            Serial2.print("\r\nAT+CSCON?\r\n");
+            delay(2000);
+            Serial2.print("\r\nAT+CSQ\r\n");
+            delay(2000);
+            Serial2.print("\r\nAT+NSOCR=DGRAM,17,8888,1\r\n");
+			BC95_READY = false;
+			ATCMD_OVER = false;
+            BC95_Connected = true;
+		}
+	}
+	if (Serial3.available() > 0) {
+		int incomingByte = Serial3.read();
+		Serial3.print("Serial 3 Recevied : ");
+		Serial3.println(incomingByte, HEX);
+	}
 	if (Serial1.available() > 0) {
 		int incomingByte = Serial1.read();
-		Serial1.print("Serial1 Recevied : ");
-		Serial1.println(incomingByte, HEX);
+		//Serial1.print("Serial1 Recevied : ");
+		//Serial1.println(incomingByte, HEX);
+        Serial2.print((char)incomingByte);
 
+  /*      
 		if(Flash_Ready) {
 			if(incomingByte == 'a') {
 				Serial1.print("Erasing Flash chip ");
@@ -176,33 +176,30 @@ void loop() {
 				Serial1.print("Flash Data : ");
 				if(strFlash.length() == 0) {
 					Serial1.println("(null)");
-				} else {
+				} else {   
 					Serial1.println(strFlash);
 				}
 			}
 			if(incomingByte == 0x33) {
-				Serial1.println("ADC Value : " + String(dataPoint));
 			}
-		}
+		}*/
+        
 	}
 
-   //RS485
-   if (Serial3.available() > 0) {
-        int incomingByte = Serial3.read();
-        Serial1.print("Serial 3 Recevied : ");
-        Serial1.println(incomingByte, HEX);
-    }
-
-   if(millis() - lastTime >= 1000) {
-
-        for(int i=0;i<sizeof(LEDS);i++){
-             if(i == LedCounter % sizeof(LEDS)) {
-		digitalWrite(LEDS[i], LOW);
-	     } else {
-	        digitalWrite(LEDS[i], HIGH);
-             }
+	if(millis() - lastTime >= 1000) {
+        if(BC95_Connected == true){
+            Serial2.print("\r\nAT+NSOST=1,120.119.77.20,60001,2,2525\r\n");
         }
-	lastTime = millis();
-	LedCounter++;
-   }
+		for(int i=0;i<sizeof(LEDS);i++){
+			if(i == LedCounter % sizeof(LEDS)) {
+				digitalWrite(LEDS[i], LOW);
+			} else {
+				digitalWrite(LEDS[i], HIGH);
+			}
+		}
+
+		lastTime = millis();
+		LedCounter++;
+
+	}
 }
