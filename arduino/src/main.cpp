@@ -43,6 +43,22 @@ DEFINE_HWSERIAL_UART(Serial3, 4);
 DEFINE_HWSERIAL_UART(Serial4, 5);
 */
 
+char BC95_CMDS[][80] = {
+    {"\r\nAT+NBAND=28\r\n"},
+	{"\r\nAT+NBAND?\r\n"},
+    {"\r\nAT+CGMM\r\n"},
+    {"\r\nAT+CGSN=1\r\n"},
+    {"\r\nAT+CGATT=1\r\n"},
+    {"\r\nAT+CGATT?\r\n"},
+    {"\r\nAT+CEREG=1\r\n"},
+    {"\r\nAT+CEREG?\r\n"},
+    {"\r\nAT+CSCON?\r\n"},
+    {"\r\nAT+CSQ\r\n"},
+    {"\r\nAT+NSOCR=DGRAM,17,8888,1\r\n"},
+	{"\0"}
+};
+
+int BC95_CMD_STEP = 0;
 bool Flash_Ready = false;
 bool BC95_Connected = false;
 
@@ -52,13 +68,13 @@ void setup() {
 
 	Serial2.begin(9600);
 
-    afio_remap(AFIO_REMAP_USART3_PARTIAL);
-    gpio_set_mode(GPIOC, 10, GPIO_AF_OUTPUT_PP);
+  	afio_remap(AFIO_REMAP_USART3_PARTIAL);
+ 	gpio_set_mode(GPIOC, 10, GPIO_AF_OUTPUT_PP);
 	gpio_set_mode(GPIOC, 11, GPIO_INPUT_FLOATING);
 	gpio_set_mode(GPIOC, 12, GPIO_AF_OUTPUT_PP); 
 
 	Serial3.begin(9600);
-	Serial3.println("Hello, world?");
+	Serial3.println("Hello, I'm Serial3!");
 
 	if (flash.initialize())
 	{
@@ -101,6 +117,12 @@ void loop() {
 
 			if(BC95_Buffer == "OK\r\n") {
 				ATCMD_OVER = true;
+				if(BC95_CMDS[BC95_CMD_STEP] == "\0") {
+					Serial1.print("Cmds finished ");
+            		BC95_Connected = true;
+				} else {
+				    BC95_CMD_STEP++;
+				}
 			}
 
 			Serial1.print(BC95_Buffer);
@@ -109,28 +131,12 @@ void loop() {
 
 		if(BC95_READY && ATCMD_OVER) {
 			//Serial2.print("\r\nAT+NUESTATS\r\n");
-            Serial2.print("\r\nAT+NBAND=8\r\n");
-            delay(2000);
-            Serial2.print("\r\nAT+CGMM\r\n");
-            delay(2000);
-            Serial2.print("\r\nAT+CGSN=1\r\n");
-            delay(2000);
-            Serial2.print("\r\nAT+CGATT=1\r\n");
-            delay(2000);
-            Serial2.print("\r\nAT+CGATT?\r\n");
-            delay(2000);
-            Serial2.print("\r\nAT+CEREG=1\r\n");
-            delay(2000);
-            Serial2.print("\r\nAT+CEREG?\r\n");
-            delay(2000);
-            Serial2.print("\r\nAT+CSCON?\r\n");
-            delay(2000);
-            Serial2.print("\r\nAT+CSQ\r\n");
-            delay(2000);
-            Serial2.print("\r\nAT+NSOCR=DGRAM,17,8888,1\r\n");
+			//Serial2.print('\r\nAT+CGDCONT=1,"IP","twm.nbiot"\r\n');
+            if(BC95_CMD_STEP <= sizeof(BC95_CMDS) / sizeof(BC95_CMDS[0])){
+            	Serial2.print(BC95_CMDS[BC95_CMD_STEP]);
+			}
 			BC95_READY = false;
 			ATCMD_OVER = false;
-            BC95_Connected = true;
 		}
 	}
 	if (Serial3.available() > 0) {
@@ -188,7 +194,7 @@ void loop() {
 
 	if(millis() - lastTime >= 1000) {
         if(BC95_Connected == true){
-            Serial2.print("\r\nAT+NSOST=1,120.119.77.20,60001,2,2525\r\n");
+           // Serial2.print("\r\nAT+NSOST=1,120.119.77.20,60001,2,2525\r\n");
         }
 		for(int i=0;i<sizeof(LEDS);i++){
 			if(i == LedCounter % sizeof(LEDS)) {
