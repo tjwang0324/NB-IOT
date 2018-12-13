@@ -55,7 +55,8 @@ char BC95_CMDS[][80] = {
     {"\r\nAT+CSCON?\r\n"},
     {"\r\nAT+CSQ\r\n"},
     {"\r\nAT+NSOCR=DGRAM,17,8888,1\r\n"},
-	{"\0"}
+	{"\0"},
+	//{'\r\nAT+CGDCONT=1,"IP","twm.nbiot"\r\n'}	//台哥大不能連線,再使用的AT指令
 };
 
 int BC95_CMD_STEP = 0;
@@ -119,7 +120,7 @@ void loop() {
 				ATCMD_OVER = true;
 				
 				//----------------------狀態機
-				if(BC95_CMDS[BC95_CMD_STEP] == "\0") {
+				if(BC95_CMDS[BC95_CMD_STEP] == "\0" && !BC95_Connected) {
 					Serial1.print("Cmds finished ");
             		BC95_Connected = true;
 					BC95_READY = false;
@@ -130,42 +131,10 @@ void loop() {
 				    BC95_CMD_STEP++;
 				}
 				
+				
 			}
 			Serial1.print(BC95_Buffer);
 			BC95_Buffer = "";
-		}
-
-		if(BC95_READY && ATCMD_OVER) {
-			//Serial2.print('\r\nAT+CGDCONT=1,"IP","twm.nbiot"\r\n');	//台哥大不能連線,再使用的AT指令
-
-			//----------------------直接下完指令
-			/*
-			Serial2.print("\r\nAT+NBAND=28\r\n"); // 8亞太 28台哥大
-			delay(2000);
-			Serial2.print("\r\nAT+NBAND?\r\n");
-			delay(1000);
-			Serial2.print("\r\nAT+CGMM\r\n");
-			delay(2000);
-			Serial2.print("\r\nAT+CGSN=1\r\n");
-			delay(2000);
-			Serial2.print("\r\nAT+CGATT=1\r\n");
-			delay(2000);
-			Serial2.print("\r\nAT+CGATT?\r\n");
-			delay(1000);
-			Serial2.print("\r\nAT+CEREG=1\r\n");
-			delay(2000);
-			Serial2.print("\r\nAT+CEREG?\r\n");
-			delay(1000);
-			Serial2.print("\r\nAT+CSCON?\r\n");
-			delay(1000);
-			Serial2.print("\r\nAT+CSQ\r\n");
-			delay(1000);
-			Serial2.print("\r\nAT+NSOCR=DGRAM,17,8888,1\r\n");
-			delay(2000);
-			BC95_Connected = true;
-			BC95_READY = false;
-			ATCMD_OVER = false;
-			*/
 		}
 	}
 	if (Serial3.available() > 0) {
@@ -224,10 +193,11 @@ void loop() {
 
 	if(millis() - lastTime >= 1000) {
         if(BC95_Connected == true){
+			//----------------------向伺服器傳送資料
 			/*
         	Serial2.print("\r\nAT+NSOST=1,120.119.77.20,60001,3,535455\r\n");
 			delay(1000);
-			Serial2.print("\r\nAT+NSORF=1,80\r\n");
+			Serial2.print("\r\nAT+NSORF=1,80\r\n");	// 接收UDP數據，顯示格式:(SocketID,來源IP,port,收到數據長度,數據(HEX碼))
 			Serial2.print("\r\nAT+CSQ\r\n");
 			*/
         }
