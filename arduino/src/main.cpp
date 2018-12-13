@@ -117,26 +117,55 @@ void loop() {
 
 			if(BC95_Buffer == "OK\r\n") {
 				ATCMD_OVER = true;
+				
+				//----------------------狀態機
 				if(BC95_CMDS[BC95_CMD_STEP] == "\0") {
 					Serial1.print("Cmds finished ");
             		BC95_Connected = true;
+					BC95_READY = false;
+					ATCMD_OVER = false;
 				} else {
+					Serial2.print(BC95_CMDS[BC95_CMD_STEP]);
+					delay(2000);
 				    BC95_CMD_STEP++;
 				}
+				
 			}
-
 			Serial1.print(BC95_Buffer);
 			BC95_Buffer = "";
 		}
 
 		if(BC95_READY && ATCMD_OVER) {
-			//Serial2.print("\r\nAT+NUESTATS\r\n");
-			//Serial2.print('\r\nAT+CGDCONT=1,"IP","twm.nbiot"\r\n');
-            if(BC95_CMD_STEP <= sizeof(BC95_CMDS) / sizeof(BC95_CMDS[0])){
-            	Serial2.print(BC95_CMDS[BC95_CMD_STEP]);
-			}
+			//Serial2.print('\r\nAT+CGDCONT=1,"IP","twm.nbiot"\r\n');	//台哥大不能連線,再使用的AT指令
+
+			//----------------------直接下完指令
+			/*
+			Serial2.print("\r\nAT+NBAND=28\r\n"); // 8亞太 28台哥大
+			delay(2000);
+			Serial2.print("\r\nAT+NBAND?\r\n");
+			delay(1000);
+			Serial2.print("\r\nAT+CGMM\r\n");
+			delay(2000);
+			Serial2.print("\r\nAT+CGSN=1\r\n");
+			delay(2000);
+			Serial2.print("\r\nAT+CGATT=1\r\n");
+			delay(2000);
+			Serial2.print("\r\nAT+CGATT?\r\n");
+			delay(1000);
+			Serial2.print("\r\nAT+CEREG=1\r\n");
+			delay(2000);
+			Serial2.print("\r\nAT+CEREG?\r\n");
+			delay(1000);
+			Serial2.print("\r\nAT+CSCON?\r\n");
+			delay(1000);
+			Serial2.print("\r\nAT+CSQ\r\n");
+			delay(1000);
+			Serial2.print("\r\nAT+NSOCR=DGRAM,17,8888,1\r\n");
+			delay(2000);
+			BC95_Connected = true;
 			BC95_READY = false;
 			ATCMD_OVER = false;
+			*/
 		}
 	}
 	if (Serial3.available() > 0) {
@@ -144,7 +173,8 @@ void loop() {
 		Serial3.print("Serial 3 Recevied : ");
 		Serial3.println(incomingByte, HEX);
 	}
-	if (Serial1.available() > 0) {
+	if (Serial1.available() > 0) { 
+		//----------------------手動下AT_Command
 		int incomingByte = Serial1.read();
 		//Serial1.print("Serial1 Recevied : ");
 		//Serial1.println(incomingByte, HEX);
@@ -184,7 +214,7 @@ void loop() {
 					Serial1.println("(null)");
 				} else {   
 					Serial1.println(strFlash);
-				}
+				} 
 			}
 			if(incomingByte == 0x33) {
 			}
@@ -194,7 +224,12 @@ void loop() {
 
 	if(millis() - lastTime >= 1000) {
         if(BC95_Connected == true){
-           // Serial2.print("\r\nAT+NSOST=1,120.119.77.20,60001,2,2525\r\n");
+			/*
+        	Serial2.print("\r\nAT+NSOST=1,120.119.77.20,60001,3,535455\r\n");
+			delay(1000);
+			Serial2.print("\r\nAT+NSORF=1,80\r\n");
+			Serial2.print("\r\nAT+CSQ\r\n");
+			*/
         }
 		for(int i=0;i<sizeof(LEDS);i++){
 			if(i == LedCounter % sizeof(LEDS)) {
