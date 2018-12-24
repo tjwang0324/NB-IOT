@@ -126,6 +126,17 @@ void setup() {
 	}
 }
 
+void restart(){
+	BC95_CMD_STEP = 0;
+	BC95_READY = false;
+	ATCMD_OVER = false;
+	BC95_Connected = false;
+	errorRetry = 0;
+	pkgCounter = 0;
+	Serial1.println("Restarting");
+	Serial2.print("\r\nAT+NRB\r\n");
+}
+
 void loop() {
 //	Serial1.print(__func__ + " : " +String(__LINE__));
 
@@ -164,7 +175,7 @@ void loop() {
             	        BC95_Connected = true;
 */
 				    } else {
-                        if(BC95_CMD_STEP == 0 && BC95_READY == false) {
+                        if(BC95_CMD_STEP == 0 && BC95_READY == false) {	
 				            BC95_READY = true;
                         } else {
                             if(BC95_CMD_STEP == 3) {
@@ -184,6 +195,14 @@ void loop() {
                         delay(1000);
                     ATCMD_OVER = true;
                 }
+				if(errorRetry >= 10){
+					Serial2.print("\r\nAT+CSQ\r\n");
+					Serial1.println(BC95_Buffer);
+					if(BC95_Buffer == "+CSQ:99,99\r\n"){
+						Serial1.println("Error is over 10 times, restart now!");
+						restart();
+					}
+				}
             }
             BC95_Buffer = "";
         }
@@ -291,6 +310,10 @@ void loop() {
 	if(millis() - lastTime >= 1000) {
 
         if(BC95_Connected == true){
+			//Serial2.print("\r\nAT+CSQ\r\n");
+			//BC95_Buffer.concat(Serial2.read());
+			//Serial1.print(BC95_Buffer);
+			//BC95_Buffer = "";
 //            Serial2.print("\r\nAT+NSOST="+String(socketId)+","+String(UDP_SERVER)+","+String(UDP_PORT)+",2,"+String(LedCounter)+"\r\n");
             String at_cmds =  String("\r\nAT+NSOST="+String(socketId)+","+String(UDP_SERVER)+","+String(UDP_PORT)+",");
             String at_data = String(pkgCounter);
